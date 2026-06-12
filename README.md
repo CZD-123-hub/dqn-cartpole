@@ -80,6 +80,28 @@ python src/test_dqn.py --episodes 10
 
 - `docs/experiment_record.md`：基础 DQN 训练和测试记录
 - `docs/hyperparameter_comparison.md`：学习率和 epsilon 衰减对比实验
+- `outputs/comparison_summary.csv`：多组实验结果汇总表
+- `outputs/comparison_curves.png`：多组实验 reward 曲线对比图
+
+生成对比图和汇总表：
+
+```powershell
+python src/compare_results.py
+```
+
+## 加分项
+
+训练 Double DQN + Dueling DQN：
+
+```powershell
+python src/train_dqn.py --episodes 500 --epsilon-decay 0.985 --target-update-freq 100 --double-dqn --dueling --model-path models/experiments/double_dueling.pth --rewards-path outputs/experiments/double_dueling_rewards.csv --plot-path outputs/experiments/double_dueling_curve.png
+```
+
+测试 Dueling 模型时需要加上 `--dueling`：
+
+```powershell
+python src/test_dqn.py --model-path models/experiments/double_dueling.pth --dueling --episodes 10
+```
 
 如果想显示 CartPole 窗口，可以加上 `--render`：
 

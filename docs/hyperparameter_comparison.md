@@ -34,6 +34,14 @@ Linear(128 -> 2)
 
 ## 三、实验结果汇总
 
+结果汇总表已保存到：
+
+- `outputs/comparison_summary.csv`
+
+训练曲线对比图已保存到：
+
+- `outputs/comparison_curves.png`
+
 | 实验 | 训练参数 | 训练轮数 | 最高 reward | 最后 20 轮平均 reward | 训练中 >=200 次数 | 10 轮测试平均 reward |
 |---|---|---:|---:|---:|---:|---:|
 | 推荐参数 | `lr=1e-3, epsilon_decay=0.985` | 335 | 500.0 | 476.15 | 80 | 500.0 |
@@ -75,6 +83,31 @@ DQN 训练过程中 reward 会出现波动。之前只保存最后一轮模型�
 
 - `learning_rate=5e-4`
 - 不同 `target_update_freq`
-- Double DQN
-- Dueling DQN
 - 多随机种子重复实验
+
+## 六、Double DQN + Dueling DQN 加分实验
+
+在基础 DQN 完成后，继续实现了两个加分项：
+
+- Double DQN：使用 policy network 选择下一状态动作，再使用 target network 评估该动作的 Q 值，从而降低普通 DQN 中 `max` 操作带来的 Q 值过估计问题。
+- Dueling DQN：将网络拆成 value stream 和 advantage stream，再组合得到每个动作的 Q 值，使模型可以分别估计状态价值和动作优势。
+
+训练命令：
+
+```powershell
+python src/train_dqn.py --episodes 500 --epsilon-decay 0.985 --target-update-freq 100 --solve-score 475 --solve-window 20 --double-dqn --dueling --log-interval 25 --model-path models/experiments/double_dueling.pth --rewards-path outputs/experiments/double_dueling_rewards.csv --plot-path outputs/experiments/double_dueling_curve.png
+```
+
+测试命令：
+
+```powershell
+python src/test_dqn.py --model-path models/experiments/double_dueling.pth --dueling --episodes 10
+```
+
+实验结果：
+
+| 实验 | 训练轮数 | 最高 reward | 最佳 20 轮平均 reward | 训练中 >=200 次数 | 训练中 500 分次数 | 10 轮测试平均 reward |
+|---|---:|---:|---:|---:|---:|---:|
+| Double DQN + Dueling DQN | 500 | 500.0 | 425.60 | 138 | 60 | 500.0 |
+
+该加分版本虽然训练曲线仍然存在波动，但保存的最佳模型在 10 轮测试中全部达到 500 分，说明加分模型同样可以完成 CartPole-v1 任务。

@@ -2,7 +2,7 @@ import unittest
 
 import torch
 
-from src.model import QNetwork
+from src.model import DuelingQNetwork, QNetwork
 
 
 class QNetworkTest(unittest.TestCase):
@@ -22,6 +22,16 @@ class QNetworkTest(unittest.TestCase):
 
         self.assertEqual(q_values.shape, (1, 2))
         self.assertEqual(q_values.dtype, torch.float32)
+
+
+class DuelingQNetworkTest(unittest.TestCase):
+    def test_forward_returns_q_values_for_each_action(self) -> None:
+        model = DuelingQNetwork(state_dim=4, action_dim=2)
+        states = torch.zeros((3, 4), dtype=torch.float32)
+
+        q_values = model(states)
+
+        self.assertEqual(q_values.shape, (3, 2))
 
 
 if __name__ == "__main__":

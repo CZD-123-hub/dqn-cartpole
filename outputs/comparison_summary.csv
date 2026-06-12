@@ -1,0 +1,5 @@
+experiment,episodes,max_reward,best_20_episode_avg,last_20_episode_avg,episodes_ge_200,episodes_eq_500
+Basic DQN,335,500.00,476.15,476.15,80,43
+Slow epsilon decay,300,157.00,42.40,38.70,0,0
+Low learning rate,300,173.00,48.55,9.30,0,0
+Double + Dueling DQN,500,500.00,425.60,88.65,138,60

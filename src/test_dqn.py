@@ -11,9 +11,9 @@ import torch
 from torch import nn
 
 try:
-    from src.model import QNetwork
+    from src.model import DuelingQNetwork, QNetwork
 except ImportError:
-    from model import QNetwork
+    from model import DuelingQNetwork, QNetwork
 
 
 def select_greedy_action(
@@ -28,14 +28,15 @@ def select_greedy_action(
     return int(torch.argmax(q_values, dim=1).item())
 
 
-def load_model(model_path: Path, device: torch.device) -> QNetwork:
+def load_model(model_path: Path, device: torch.device, dueling: bool = False) -> nn.Module:
     """Load a trained CartPole QNetwork from disk."""
     if not model_path.exists():
         raise FileNotFoundError(
             f"Model file not found: {model_path}. Train first with src/train_dqn.py."
         )
 
-    model = QNetwork(state_dim=4, action_dim=2).to(device)
+    network_cls = DuelingQNetwork if dueling else QNetwork
+    model = network_cls(state_dim=4, action_dim=2).to(device)
     state_dict = torch.load(model_path, map_location=device)
     model.load_state_dict(state_dict)
     model.eval()
@@ -48,10 +49,11 @@ def evaluate_dqn(
     max_steps: int = 500,
     seed: int = 123,
     render: bool = False,
+    dueling: bool = False,
 ) -> list[float]:
     """Evaluate the trained model and return episode rewards."""
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    policy_net = load_model(model_path, device)
+    policy_net = load_model(model_path, device, dueling=dueling)
     env = gym.make("CartPole-v1", render_mode="human" if render else None)
 
     rewards: list[float] = []
@@ -86,6 +88,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-steps", type=int, default=500)
     parser.add_argument("--seed", type=int, default=123)
     parser.add_argument("--render", action="store_true")
+    parser.add_argument("--dueling", action="store_true")
     return parser.parse_args()
 
 
@@ -97,4 +100,5 @@ if __name__ == "__main__":
         max_steps=args.max_steps,
         seed=args.seed,
         render=args.render,
+        dueling=args.dueling,
     )

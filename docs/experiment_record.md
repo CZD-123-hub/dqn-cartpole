@@ -115,11 +115,8 @@ Average reward over 10 episodes: 500.0
 - `learning_rate=1e-3, epsilon_decay=0.985` 效果最好，测试平均 reward 达到 500.0。
 - `epsilon_decay=0.995` 衰减较慢，300 轮训练后测试平均 reward 只有 41.6。
 - `learning_rate=1e-4` 学习速度太慢，300 轮训练后测试平均 reward 只有 9.4。
+- Double DQN + Dueling DQN 加分版本也已经实现，最佳模型 10 轮测试平均 reward 达到 500.0。
 
 后续可以继续补充以下内容作为加分项：
 
-- 对比不同学习率对训练曲线的影响。
-- 对比不同 epsilon 衰减速度对探索和收敛的影响。
-- 实现 Double DQN，降低 Q 值过估计问题。
-- 实现 Dueling DQN，拆分 state value 和 action advantage。
 - 多次随机种子实验，观察训练稳定性。

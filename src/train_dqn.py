@@ -14,10 +14,10 @@ import torch
 from torch import nn
 
 try:
-    from src.model import QNetwork
+    from src.model import DuelingQNetwork, QNetwork
     from src.replay_buffer import ReplayBuffer
 except ImportError:
-    from model import QNetwork
+    from model import DuelingQNetwork, QNetwork
     from replay_buffer import ReplayBuffer
 
 
@@ -61,6 +61,7 @@ def compute_dqn_loss(
     batch: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray],
     gamma: float,
     device: torch.device,
+    double_dqn: bool = False,
 ) -> torch.Tensor:
     """Compute the DQN Bellman loss for one sampled batch."""
     states, actions, rewards, next_states, dones = batch
@@ -77,7 +78,11 @@ def compute_dqn_loss(
     current_q_values = current_q_values.squeeze(1)
 
     with torch.no_grad():
-        next_q_values = target_net(next_states_tensor).max(dim=1).values
+        if double_dqn:
+            next_actions = policy_net(next_states_tensor).argmax(dim=1, keepdim=True)
+            next_q_values = target_net(next_states_tensor).gather(1, next_actions).squeeze(1)
+        else:
+            next_q_values = target_net(next_states_tensor).max(dim=1).values
         target_q_values = rewards_tensor + gamma * next_q_values * (1.0 - dones_tensor)
 
     return nn.SmoothL1Loss()(current_q_values, target_q_values)
@@ -139,6 +144,8 @@ def train_dqn(
     solve_score: float = 475.0,
     solve_window: int = 20,
     log_interval: int = 1,
+    double_dqn: bool = False,
+    dueling: bool = False,
     seed: int = 42,
     model_path: Path = Path("models/dqn_cartpole.pth"),
     rewards_path: Path = Path("outputs/rewards.csv"),
@@ -153,8 +160,9 @@ def train_dqn(
     state_dim = int(env.observation_space.shape[0])
     action_dim = int(env.action_space.n)
 
-    policy_net = QNetwork(state_dim=state_dim, action_dim=action_dim).to(device)
-    target_net = QNetwork(state_dim=state_dim, action_dim=action_dim).to(device)
+    network_cls = DuelingQNetwork if dueling else QNetwork
+    policy_net = network_cls(state_dim=state_dim, action_dim=action_dim).to(device)
+    target_net = network_cls(state_dim=state_dim, action_dim=action_dim).to(device)
     target_net.load_state_dict(policy_net.state_dict())
     target_net.eval()
 
@@ -194,6 +202,7 @@ def train_dqn(
                         batch=batch,
                         gamma=gamma,
                         device=device,
+                        double_dqn=double_dqn,
                     )
                     optimizer.zero_grad()
                     loss.backward()
@@ -258,6 +267,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--solve-score", type=float, default=475.0)
     parser.add_argument("--solve-window", type=int, default=20)
     parser.add_argument("--log-interval", type=int, default=1)
+    parser.add_argument("--double-dqn", action="store_true")
+    parser.add_argument("--dueling", action="store_true")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--model-path", type=Path, default=Path("models/dqn_cartpole.pth"))
     parser.add_argument("--rewards-path", type=Path, default=Path("outputs/rewards.csv"))
@@ -281,6 +292,8 @@ if __name__ == "__main__":
         solve_score=args.solve_score,
         solve_window=args.solve_window,
         log_interval=args.log_interval,
+        double_dqn=args.double_dqn,
+        dueling=args.dueling,
         seed=args.seed,
         model_path=args.model_path,
         rewards_path=args.rewards_path,
