@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.py[cod]
+.idea/workspace.xml
+models/*.pth
+outputs/*.png
+outputs/*.csv
+outputs/.matplotlib/
+models/**/*.pth
+outputs/**/*.png
+outputs/**/*.csv
+outputs/**/.matplotlib/

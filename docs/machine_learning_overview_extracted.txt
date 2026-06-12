@@ -1,0 +1,59 @@
+机器学习训练指南
+(要求尽量在2026年7月1日前完成并汇报)
+一、基础知识
+书籍推荐
+公众号推荐
+新智元
+量子位
+机器之心
+学习视频推荐
+李宏毅2021/2022春机器学习课程 （强烈推荐）https://www.bilibili.com/video/BV1Wv411h7kN
+二、工作环境
+机器学习环境
+linux系统安装（这个双系统肯定要的）
+cuda（Windows系统无脑装，linux系统祝你好运，找好教程一步步来，现在避坑指南已经比较多了）
+cudnn（cuda和cudnn还有你自己的显卡还有你的机器学习平台记得要兼容）
+机器学习平台（基于python）
+tensorflow（工业级产品，教程满天飞，特点是session结构还有万能的tensorboard画图，方便并行）
+pytorch（后起之秀，api比tf正常太多了，语法也是正常人类的，目前推荐使用）
+keras（高级api，适合新手，无脑上手非常有成就感）
+sklearn（机器学习包，集合了大部分机器学习对于数据集处理、传统算法、模型分析的功能）
+机器学习平台（基于c++）
+opencv（超强视觉处理lib，也是你的模型能够部署在其他地方的最重要的转换工具）
+tensorflow
+IDE
+python推荐Pycharm，学校邮箱直接免费注册企业版(被制裁了)请自行琢磨如何获取，包括但不限于钞能力。
+C++推荐vscode，轻量级，越来越好用，自己动手丰衣足食； 你也可以选择vsstudio，全，胖省心
+全自动AICoding IDE（答应我不要古法编程好吗）
+Claude
+Tare
+Codex
+编辑器（答应我不要用windows自带的记事本打开修改任何代码）
+sublime text3
+notepad++
+vim
+三、文献阅读
+谷歌学术（谷歌学术镜像，scihub你懂得）
+南昌大学图书馆（真的是啥都有，只要你知道期刊名）
+四、必读论文
+以下论文跟项目组所做工作息息相关，请熟悉
+LLM相关 《Attention is All you Need》、《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》、《Improving Language Understanding by Generative Pre-Training》
+医学图像处理
+電腦麻將程式 ThousandWind 的設計與實作 2013年
+A novel deep residual network-based incomplete information competition strategy for four-players Mahjong games 2019年
+An efficient AI-based method to play the Mahjong game with the knowledge and game-tree searching strategy 2021年
+Suphx Mastering Mahjong with Deep Reinforcement Learning 2020年
+麻将博弈AI构建方法综述，”智能系统学报”
+仔细阅读论文，并做好笔记
+读完论文后，请写一篇综述（介绍背景、相关工作、技术、创新点、存在问题、改进方向）
+（加分项）复现论文中的技术
+五、练手
+github代码管理（廖雪峰你值得拥有）
+学会git代码基本管理操作，push、pull、clone
+下面的代码要求放在自己的github上
+2.参考26研0任务书
+昵称 | 图片 | 推荐 | 新手入门
+西瓜书 |  | 周志华大佬的，内容例子多便于理解，公式推导详细，新手必备 | 一、二、三、 五、十六章，新手入门必备
+花书 |  | 大佬的书，特点是有数学基础，作者因为有几十年的机器学习研究经历，写的内容比较深入，适合多读几遍 | 数学基础不好的补一下第一部 分，难啃也没关系，反复就行； 第6、9、10建议先阅读，反过来在看其他章 节，更容易理解
+统计学习 |  | 配合西瓜书食用最佳，这本书简洁，公式定理条理清楚。西瓜书里面有例 子，这里直接有计算实 例，可以方便理解一个公式和概念 | 第1、2、6章建议提前阅读，第3、4、5、7章之后阅读，噢诶和西瓜书看你想看的
+强化学习 |  | an introduction的中文版，强化学习入门必备， 比其他的书讲的好理解 | 第2、3、4、5、6章是你们 / 容易入门的，也是以前经常用的方法；第13章是现在常用方法的基础；建议关注deepmind和openAI的blog
